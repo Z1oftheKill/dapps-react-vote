@@ -1,0 +1,21 @@
+/* /src/css/tailwindcss.css*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  @font-face {
+    font-family: Ali;
+    font-weight: 400;
+    src: url(../font/Alimama_ShuHeiTi.woff2) format('woff2');
+  }
+  @font-face {
+    font-family: Dymh;
+    font-weight: 400;
+    src: url(../font/dy_mh.otf) format('otf');
+  }
+  @font-face {
+    font-family: Syht;
+    font-weight: 400;
+    src: url(../font/sy.OTF) format('otf');
+  }
+}
