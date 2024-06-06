@@ -29,7 +29,7 @@ const WalletDialog: React.FC<WalletDialogProps> = (props) => {
   const selectWallet = useCallback(async () => {
     const accounts = await (provider as JsonRpcApiProvider)?.listAccounts()
     const balance = await provider.getBalance(signer?.getAddress() || '')
-    const address = accounts[0].address as string
+    const address = accounts[0]?.address || ''
     setAccount({ address, balance })
     handleOk()
   }, [setAccount, handleOk])
