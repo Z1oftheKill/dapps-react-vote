@@ -1,20 +1,24 @@
 import React, { useEffect, useCallback } from 'react'
 import { Modal } from 'antd'
-import { ethers, JsonRpcApiProvider } from 'ethers'
+import { ethers, JsonRpcApiProvider, AbstractProvider } from 'ethers'
 
 import { WalletDialogProps } from './interface'
 import metamask_icon from '@assets/images/icons/metamask.svg'
 
-let signer = null
+let signer: ethers.JsonRpcSigner
 
-let provider
+let provider: JsonRpcApiProvider | AbstractProvider
 
-if (window.ethereum == null) {
-  console.log('MetaMask not installed; using read-only defaults')
-  provider = ethers.getDefaultProvider()
-} else {
-  provider = new ethers.BrowserProvider(window.ethereum)
-  signer = await provider.getSigner()
+try {
+  if (window.ethereum == null) {
+    console.log('MetaMask not installed; using read-only defaults')
+    provider = ethers.getDefaultProvider()
+  } else {
+    provider = new ethers.BrowserProvider(window.ethereum)
+    signer = await (provider as JsonRpcApiProvider).getSigner()
+  }
+} catch (error) {
+  console.log(error)
 }
 
 const walletList = [
@@ -27,10 +31,13 @@ const walletList = [
 const WalletDialog: React.FC<WalletDialogProps> = (props) => {
   const { setAccount, isModalOpen, handleCancel, handleOk } = props
   const selectWallet = useCallback(async () => {
-    const accounts = await (provider as JsonRpcApiProvider)?.listAccounts()
-    const balance = await provider.getBalance(signer?.getAddress() || '')
-    const address = accounts[0]?.address || ''
-    setAccount({ address, balance })
+    try {
+      const accounts = await (provider as JsonRpcApiProvider)?.listAccounts()
+      const balance = await provider.getBalance(signer?.getAddress() || '')
+      const address = accounts[0]?.address || ''
+      window.address = address
+      setAccount({ address, balance })
+    } catch (error) {}
     handleOk()
   }, [setAccount, handleOk])
 
