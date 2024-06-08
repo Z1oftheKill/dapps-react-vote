@@ -43,6 +43,13 @@ contract Ballot {
         }
     }
 
+    function getVoteList() public view returns (Proposal[] memory) {
+        Proposal[] memory voteList = new Proposal[](proposals.length);
+        for (uint i = 0; i < proposals.length; i++) {
+            voteList[i] = proposals[i];
+        }
+        return voteList;
+    }
     /**
      * @dev Give 'voter' the right to vote on this ballot. May only be called by 'chairperson'.
      * @param voter address of voter
