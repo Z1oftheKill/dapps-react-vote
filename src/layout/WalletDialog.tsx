@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect } from 'react'
 import { Modal } from 'antd'
 import { ethers, JsonRpcApiProvider, AbstractProvider } from 'ethers'
 
@@ -30,20 +30,23 @@ const walletList = [
 
 const WalletDialog: React.FC<WalletDialogProps> = (props) => {
   const { setAccount, isModalOpen, handleCancel, handleOk } = props
-  const selectWallet = useCallback(async () => {
+  const selectWallet = async () => {
     try {
       const accounts = await (provider as JsonRpcApiProvider)?.listAccounts()
       const balance = await provider.getBalance(signer?.getAddress() || '')
       const address = accounts[0]?.address || ''
-      window.address = address
+      localStorage.setItem('address', address)
       setAccount({ address, balance })
-    } catch (error) {}
-    handleOk()
-  }, [setAccount, handleOk])
+    } catch (error) {
+      localStorage.setItem('address', '')
+    } finally {
+      handleOk()
+    }
+  }
 
   useEffect(() => {
     selectWallet()
-  }, [selectWallet])
+  }, [])
 
   return (
     <Modal title="Select Wallet" open={isModalOpen} onCancel={handleCancel} onOk={handleOk}>

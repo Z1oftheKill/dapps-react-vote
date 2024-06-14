@@ -1,59 +1,42 @@
 import React, { useEffect, useState } from 'react'
 import { Radio, Button } from 'antd'
-import { ethers } from 'ethers'
-
 import type { RadioChangeEvent } from 'antd'
-import { VoteListProp } from './interface'
+import { ethers, JsonRpcApiProvider } from 'ethers'
 
+import { VoteListProp } from './interface'
+import abi_json from '@/contracts/abi.json'
+const provider = new ethers.JsonRpcProvider('http://0.0.0.0:8545')
+const contractAddresss = '0x95f236eaa7fDb41C981FfA79569ABE692e9fbcAf'
+const abi = abi_json
+const signer = await (provider as JsonRpcApiProvider).getSigner()
+
+const contract = new ethers.Contract(contractAddresss, abi, signer)
 const Home: React.FC = () => {
   const [voteList, setVoteList] = useState<VoteListProp[]>([])
 
-  const [value, setValue] = useState(1)
+  const [value, setValue] = useState(0)
+  const [loading, setLoading] = useState(false)
 
   const onChange = (e: RadioChangeEvent) => setValue(e.target.value)
 
-  const handleConfirm = () => {
-    console.log(value)
+  const handleConfirm = async () => {
+    setLoading(true)
+    try {
+      const res = await contract.vote(value)
+      console.log('🚀 ~ handleConfirm ~ res:', res)
+    } catch (error) {
+      console.log('🚀 ~ handleConfirm ~ error:', error.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
     const getVoteList = async () => {
-      const provider = new ethers.JsonRpcProvider('http://0.0.0.0:8545')
-      const contractAddresss = '0xce30F4Bba32e48bAe66a9011Fe947A156f549018'
-      const abi = [
-        {
-          constant: true,
-          inputs: [],
-          name: 'getVoteList',
-          outputs: [
-            {
-              components: [
-                {
-                  internalType: 'bytes32',
-                  name: 'name',
-                  type: 'bytes32'
-                },
-                {
-                  internalType: 'uint256',
-                  name: 'voteCount',
-                  type: 'uint256'
-                }
-              ],
-              internalType: 'struct Ballot.Proposal[]',
-              name: '',
-              type: 'tuple[]'
-            }
-          ],
-          payable: false,
-          stateMutability: 'view',
-          type: 'function'
-        }
-      ]
-      const contract = new ethers.Contract(contractAddresss, abi, provider)
-      console.dir(contract.chairperson)
       let voteList = await contract.getVoteList()
       voteList = [...voteList].map((i) => i[0])
       voteList = voteList.map((i: string) => ({ label: ethers.decodeBytes32String(i), value: i }))
+      console.log('🚀 ~ getVoteList ~ voteList:', voteList)
       setVoteList(voteList)
     }
     getVoteList()
@@ -63,14 +46,14 @@ const Home: React.FC = () => {
       <h2 className="text-[26px]">Vote List</h2>
       <Radio.Group className="flex flex-col" onChange={onChange} value={value}>
         {voteList.length > 0 &&
-          voteList.map((i) => (
-            <Radio className="mt-2" key={i.label} value={i.value}>
+          voteList.map((i, index) => (
+            <Radio className="mt-2" key={i.label} value={index}>
               {i.label}
             </Radio>
           ))}
       </Radio.Group>
       <div className="footer mt-4 flex justify-end">
-        <Button type="primary" onClick={handleConfirm}>
+        <Button loading={loading} type="primary" onClick={handleConfirm}>
           confirm
         </Button>
       </div>

@@ -35,6 +35,7 @@ const MainLayout: React.FC = () => {
 
   const enCodeAddress = (address: string): string => {
     if (!address) return ''
+
     // 中间的字符隐藏只保留前后5位
     const start = address.slice(0, 5)
     const end = address.slice(-5)
