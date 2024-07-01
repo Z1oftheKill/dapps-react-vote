@@ -6,7 +6,7 @@ export async function deployContract() {
   const provider = new ethers.JsonRpcProvider('http://0.0.0.0:8545')
 
   // 私钥（仅用于本地测试，不要将私钥硬编码在代码中）
-  const privateKey = '0x6ee2f408cb3db800e032713be9e5e52ed1f32232b647db7fb923a50fe6e5d7c6'
+  const privateKey = '0xd96c3885f55c288e938bfe9f8756522d0a5d251247dca5895d743f9c83ba83da'
   // 连接到以太坊网络
   const wallet = new ethers.Wallet(privateKey, provider)
 
@@ -17,7 +17,7 @@ export async function deployContract() {
   // 创建合约工厂
   const factory = new ethers.ContractFactory(abi, bytecode, wallet)
 
-  const argumentsList = Array.from({ length: 10 }).map((i, k) =>
+  const argumentsList = Array.from({ length: 10 }).map((_, k) =>
     ethers.encodeBytes32String('选项' + (k + 1))
   )
   // 部署合约
