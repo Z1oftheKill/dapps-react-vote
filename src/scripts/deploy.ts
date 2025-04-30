@@ -10,11 +10,10 @@ export async function deployContract() {
   try {
     // 以太坊节点 provider，可以是 Infura 或者本地节点
     const provider = new ethers.JsonRpcProvider('http://0.0.0.0:8545')
-    console.log('provider', provider)
     // 私钥（仅用于本地测试，不要将私钥硬编码在代码中）
-    const privateKey = 
-      process.env.PRIVATE_KEY ||
-      '0xd96c3885f55c288e938bfe9f8756522d0a5d251247dca5895d743f9c83ba83da'
+    const privateKey =
+      import.meta.env.PRIVATE_KEY ||
+      '0x2b47cec23ba16b522a911bb64d2d6257a6b7b8d845ab0f57b6da7a6197094e6f'
 
     // 连接到以太坊网络
     const wallet = new ethers.Wallet(privateKey, provider)
@@ -25,6 +24,7 @@ export async function deployContract() {
 
     // 创建合约工厂
     const factory = new ethers.ContractFactory(abi, bytecode, wallet)
+    console.log('🚀 ~ deployContract ~ factory:', factory)
 
     // 生成10个默认投票选项
     const argumentsList = Array.from({ length: 10 }).map((_, k) =>
@@ -36,7 +36,6 @@ export async function deployContract() {
     const deployedContract = await factory.deploy(argumentsList)
 
     // 等待合约部署完成
-    console.log('等待合约部署确认...')
     await deployedContract.waitForDeployment()
 
     const contractAddress = deployedContract.target
