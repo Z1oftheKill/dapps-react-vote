@@ -17,12 +17,27 @@ const Vote: React.FC = () => {
 
   const onChange = (e: RadioChangeEvent) => setValue(e.target.value)
 
+  const getVoteList = async () => {
+    try {
+      const voteList = await contract?.getVoteList()
+      const formattedList = voteList.map((item: any) => ({
+        label: ethers.decodeBytes32String(item.name),
+        value: item.name,
+        voteCount: Number(item.voteCount)
+      }))
+      setVoteList(formattedList)
+    } catch (error) {
+      console.error('获取投票列表失败:', error)
+    }
+  }
+
   const handleConfirm = async () => {
     setLoading(true)
     try {
       const res = await contract?.vote(value)
       await res?.wait()
       message.success('投票成功')
+      await getVoteList()
       getWinner()
     } catch (error) {
       message.error((error as Error)?.message || '投票失败')
