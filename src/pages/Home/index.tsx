@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react'
 import { Radio, Button, message, Spin } from 'antd'
 import type { RadioChangeEvent } from 'antd'
@@ -70,5 +71,11 @@ const Home: React.FC = () => {
       </div>
     </Spin>
   )
+=======
+import React from 'react'
+
+const Home: React.FC = () => {
+  return <div>home</div>
+>>>>>>> 35fe428693dbcb274a0a0294ef7ae324f6cddc2f
 }
 export default Home

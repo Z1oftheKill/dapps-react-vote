@@ -35,6 +35,8 @@ const WalletDialog: React.FC<WalletDialogProps> = (props) => {
       const accounts = await (provider as JsonRpcApiProvider)?.listAccounts()
       const balance = await provider.getBalance(signer?.getAddress() || '')
       const address = accounts[0]?.address || ''
+      console.log('🚀 ~ selectWal ~ address:', address)
+
       localStorage.setItem('address', address)
       setAccount({ address, balance })
     } catch (error) {

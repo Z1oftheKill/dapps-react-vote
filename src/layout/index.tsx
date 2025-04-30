@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
-import { Button } from 'antd'
+import { RouterProvider } from 'react-router-dom'
+import { Button, Menu, MenuProps } from 'antd'
 
 import { AccountType } from './interface'
 import WalletDialog from './WalletDialog'
+import router from '@router/index'
 import './index.less'
 
 const MainLayout: React.FC = () => {
@@ -10,7 +12,17 @@ const MainLayout: React.FC = () => {
     address: '',
     balance: 1n
   })
-
+  const items = [
+    {
+      key: 'home',
+      label: '主页'
+    },
+    {
+      key: 'project',
+      label: '项目',
+      children: [{ key: 'vote', label: '投票' }]
+    }
+  ]
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -41,23 +53,45 @@ const MainLayout: React.FC = () => {
     const end = address.slice(-5)
     return start + '...' + end
   }
+
+  const location = window.location
+  const change: MenuProps['onClick'] = (e) => {
+    router.navigate('/' + e.keyPath.reverse().join('/'))
+  }
+
   return (
-    <div className="h-full py-4 px-6 layout-header flex justify-end items-center">
-      <span className="mr-4 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-        {enCodeAddress(account.address)}
-      </span>
-      <span className="mr-4">{account.balance.toString()}</span>
-      {!account.address && (
-        <Button type="primary" onClick={linkWallet}>
-          Link Wallet
-        </Button>
-      )}
-      <WalletDialog
-        isModalOpen={isModalOpen}
-        handleCancel={handleCancel}
-        setAccount={setWalletAccount}
-        handleOk={handleOk}
-      ></WalletDialog>
+    <div className="my flex flex-col h-full">
+      <div>
+        <div className="h-full py-3 px-6 layout-header flex justify-between items-center">
+          <div>DAPPS</div>
+          <div>
+            <span className="mr-4">{enCodeAddress(account.address)}</span>
+            <span className="mr-4">{account.balance.toString()}</span>
+            {!account.address && (
+              <Button type="primary" onClick={linkWallet}>
+                Link Wallet
+              </Button>
+            )}
+            <WalletDialog
+              isModalOpen={isModalOpen}
+              handleCancel={handleCancel}
+              setAccount={setWalletAccount}
+              handleOk={handleOk}
+            ></WalletDialog>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-[1] h-full ">
+        <Menu
+          className="w-[160px]"
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={location.pathname.split('/')}
+          onClick={change}
+          items={items}
+        />
+        <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
+      </div>
     </div>
   )
 }

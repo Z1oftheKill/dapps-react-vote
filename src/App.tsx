@@ -1,13 +1,19 @@
-import { RouterProvider } from 'react-router-dom'
-import router from '@router/index'
 import MainLayout from './layout'
+import { http, createConfig, WagmiProvider } from 'wagmi'
+import { mainnet, sepolia } from 'wagmi/chains'
 
-function App() {
+export const config = createConfig({
+  chains: [mainnet, sepolia],
+  transports: {
+    [mainnet.id]: http(),
+    [sepolia.id]: http()
+  }
+})
+const App: React.FC = () => {
   return (
-    <div className="my">
+    <WagmiProvider config={config}>
       <MainLayout></MainLayout>
-      <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
-    </div>
+    </WagmiProvider>
   )
 }
 

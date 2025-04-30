@@ -1,30 +1,12 @@
-# React + TypeScript + Vite
+# 投票 DApp
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+这是一个基于以太坊的去中心化投票应用。
 
-Currently, two official plugins are available:
+## 项目启动步骤
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. 安装并启动 Ganache
+   - 参考 [WTF-Solidity](https://github.com/AmazingAng/WTF-Solidity/tree/main/Topics/Tools/TOOL04_Alchemy)
+   - 下载并安装 [Ganache](https://trufflesuite.com/ganache/)
+   - 启动 Ganache,创建一个新的工作区
+   - 确保 Ganache 运行在 `http://0.0.0.0:8545`
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
