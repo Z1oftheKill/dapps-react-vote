@@ -4,7 +4,11 @@ import Vote from '@/pages/Project/Vote'
 
 const router = createBrowserRouter([
   {
-    path: 'home',
+    path: '/',
+    Component: Home
+  },
+  {
+    path: '/home',
     Component: Home
   },
   {
