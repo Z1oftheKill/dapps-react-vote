@@ -3,10 +3,10 @@ import abi_json from '@/contracts/abi.json'
 import bytecodes from './bytecode'
 export async function deployContract() {
   // 以太坊节点 provider，可以是 Infura 或者本地节点
-  const provider = new ethers.JsonRpcProvider('http://0.0.0.0:8545')
+  const provider = new ethers.JsonRpcProvider('http://127.0.0.1:8545')
 
   // 私钥（仅用于本地测试，不要将私钥硬编码在代码中）
-  const privateKey = '0x6ee2f408cb3db800e032713be9e5e52ed1f32232b647db7fb923a50fe6e5d7c6'
+  const privateKey = '0xfa614cbb1974b71c3975fc7a94d9c76b5ab07fc91b64fee17aa38cd711abca5e'
   // 连接到以太坊网络
   const wallet = new ethers.Wallet(privateKey, provider)
 

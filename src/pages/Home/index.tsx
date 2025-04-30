@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Radio, Button, message, Spin } from 'antd'
 import type { RadioChangeEvent } from 'antd'
-import { ethers, JsonRpcApiProvider, BaseContract } from 'ethers'
+import { ethers, JsonRpcApiProvider } from 'ethers'
 import { deployContract } from '@/scripts/deploy'
-import { VoteListProp } from './interface'
+import { VoteListProp, ExtendedContract } from './interface'
 import abi_json from '@/contracts/abi.json'
 
 const Home: React.FC = () => {
@@ -13,18 +13,17 @@ const Home: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [boxLoading, setBoxLoading] = useState(false)
 
-  const [contract, setContract] = useState()
+  const [contract, setContract] = useState<ExtendedContract>()
 
   const onChange = (e: RadioChangeEvent) => setValue(e.target.value)
 
   const handleConfirm = async () => {
     setLoading(true)
     try {
-      const res = await contract.vote(value)
-      console.log('🚀 ~ handleConfirm ~ res:', res)
+      await (contract as ExtendedContract).vote(value)
       message.success('投票成功')
     } catch (error) {
-      console.log('🚀 ~ handleConfirm ~ error:', error?.message)
+      message.error('投票失败')
     } finally {
       setLoading(false)
     }
@@ -33,18 +32,21 @@ const Home: React.FC = () => {
   useEffect(() => {
     const getVoteList = async () => {
       setBoxLoading(true)
-      const provider = new ethers.JsonRpcProvider('http://0.0.0.0:8545')
-      const contractAddresss = await deployContract()
-      const abi = abi_json
-      const signer = await (provider as JsonRpcApiProvider).getSigner()
-      const contract = new ethers.Contract(contractAddresss, abi, signer)
-      setContract(contract)
-      let voteList = await contract.getVoteList()
-      voteList = [...voteList].map((i) => i[0])
-      voteList = voteList.map((i: string) => ({ label: ethers.decodeBytes32String(i), value: i }))
-      console.log('🚀 ~ getVoteList ~ voteList:', voteList)
-      setVoteList(voteList)
-      setBoxLoading(false)
+      try {
+        const provider = new ethers.JsonRpcProvider('http://0.0.0.0:8545')
+        const contractAddresss = await deployContract()
+        const abi = abi_json
+        const signer = await (provider as JsonRpcApiProvider).getSigner()
+        const contract = new ethers.Contract(contractAddresss, abi, signer)
+        setContract(contract as ExtendedContract)
+        let voteList = await contract.getVoteList()
+        voteList = [...voteList].map((i) => i[0])
+        voteList = voteList.map((i: string) => ({ label: ethers.decodeBytes32String(i), value: i }))
+        setVoteList(voteList)
+        setBoxLoading(false)
+      } catch (error) {
+        console.log(error)
+      }
     }
     getVoteList()
   }, [])
