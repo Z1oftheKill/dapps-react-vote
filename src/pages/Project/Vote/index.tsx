@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Radio, Button, message, Spin } from 'antd'
 import type { RadioChangeEvent } from 'antd'
-import { ethers, JsonRpcApiProvider, Contract } from 'ethers'
+import { ethers, Contract } from 'ethers'
 import { deployContract } from '@/scripts/deploy'
 import { VoteListProp } from './interface'
 import abi_json from '@/contracts/abi.json'
@@ -12,7 +12,6 @@ const Vote: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [boxLoading, setBoxLoading] = useState(false)
   const [contract, setContract] = useState<Contract>()
-  const [hasVoteRight, setHasVoteRight] = useState(false)
   const [winnerName, setWinnerName] = useState('')
 
   const onChange = (e: RadioChangeEvent) => setValue(e.target.value)
@@ -20,7 +19,7 @@ const Vote: React.FC = () => {
   const getVoteList = async () => {
     try {
       const voteList = await contract?.getVoteList()
-      const formattedList = voteList.map((item: any) => ({
+      const formattedList = voteList.map((item: VoteListProp) => ({
         label: ethers.decodeBytes32String(item.name),
         value: item.name,
         voteCount: Number(item.voteCount)
@@ -57,16 +56,6 @@ const Vote: React.FC = () => {
     }
   }
 
-  const checkVoteRight = async (address: string) => {
-    try {
-      const voter = await contract?.voters(address)
-      console.log('🚀 ~ checkVoteRight ~ voter:', contract)
-      setHasVoteRight(voter?.weight > 0 && !voter?.voted)
-    } catch (error) {
-      console.error('检查投票权失败:', error)
-    }
-  }
-
   useEffect(() => {
     const initContract = async () => {
       setBoxLoading(true)
@@ -79,15 +68,13 @@ const Vote: React.FC = () => {
         setContract(contract)
 
         const voteList = await contract.getVoteList()
-        const formattedList = voteList.map((item: any) => ({
+        const formattedList = voteList.map((item: VoteListProp) => ({
           label: ethers.decodeBytes32String(item.name),
           value: item.name,
           voteCount: Number(item.voteCount)
         }))
         setVoteList(formattedList)
 
-        const address = await signer.getAddress()
-        await checkVoteRight(address)
         await getWinner()
       } catch (error) {
         message.error('初始化合约失败')
@@ -117,7 +104,7 @@ const Vote: React.FC = () => {
         )}
         <div className="footer mt-4 flex justify-end">
           <Button loading={loading} type="primary" onClick={handleConfirm}>
-            {hasVoteRight ? '确认投票' : '无投票权'}
+            确认投票
           </Button>
         </div>
       </div>
