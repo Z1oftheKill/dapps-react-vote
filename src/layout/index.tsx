@@ -21,6 +21,10 @@ const MainLayout: React.FC = () => {
       key: 'project',
       label: '项目',
       children: [{ key: 'vote', label: '投票' }]
+    },
+    {
+      key: 'training',
+      label: '训练'
     }
   ]
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -90,7 +94,9 @@ const MainLayout: React.FC = () => {
           onClick={change}
           items={items}
         />
-        <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
+        <div className="flex-[1]">
+          <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
+        </div>
       </div>
     </div>
   )
