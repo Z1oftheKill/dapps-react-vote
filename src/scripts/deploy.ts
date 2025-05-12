@@ -12,7 +12,7 @@ export async function deployContract() {
     const provider = new ethers.JsonRpcProvider('http://127.0.0.1:8545')
 
     // 私钥（仅用于本地测试，不要将私钥硬编码在代码中）
-    const privateKey = '0xfa614cbb1974b71c3975fc7a94d9c76b5ab07fc91b64fee17aa38cd711abca5e'
+    const privateKey = '0x11de11cd3586ad37509140a4b9ffb41a462f591bb3900fc56d9dd528caee33ef'
     // 连接到以太坊网络
     const wallet = new ethers.Wallet(privateKey, provider)
 
