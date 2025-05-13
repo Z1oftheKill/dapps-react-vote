@@ -11,12 +11,29 @@ const HelloV: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
 
   const main = async () => {
-    setLoading(true)
-
+    // 查询provider 连接到了那条链路
     const network = await provider.getNetwork()
     setBalance(network.chainId.toString())
 
-    setLoading(false)
+    // 查询区块高度
+    const blockNumber = await provider.getBlockNumber()
+    console.log('blockNumber', blockNumber)
+
+    // 查询摸个钱包的交易吃书
+    const tx = await provider.getTransaction('vitalik.eth')
+    console.log('tx', tx)
+
+    // 利用 getFeedData 查询 gas
+    const feeData = await provider.getFeeData()
+    console.log('feeData', feeData)
+
+    // 查询区块信息
+    const block = await provider.getBlock(0)
+    console.log('block', block)
+
+    // 查询合约的地址
+    const code = await provider.getCode('0xc778417e063141139fce010982780140aa0cd5ab')
+    console.log('🚀 ~ main ~ code:', code)
   }
   useEffect(() => {
     main()

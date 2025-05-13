@@ -94,7 +94,7 @@ const MainLayout: React.FC = () => {
           onClick={change}
           items={items}
         />
-        <div className="flex-[1]">
+        <div className="w-[calc(100%-160px)]">
           <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
         </div>
       </div>

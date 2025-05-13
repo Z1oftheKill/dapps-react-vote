@@ -4,6 +4,7 @@ import './index.scss'
 import { Select } from 'antd'
 import HelloV from './Items/01HelloV'
 import Provider from './Items/02Provider'
+import SendEth from './Items/04SendEth'
 const Training: React.FC = () => {
   const [training, setTraining] = useState<string>(localStorage.getItem('training') || '01HelloV')
 
@@ -17,6 +18,11 @@ const Training: React.FC = () => {
       label: 'Provider',
       value: '02Provider',
       component: <Provider />
+    },
+    {
+      label: 'SendEth',
+      value: '04SendEth',
+      component: <SendEth />
     }
   ]
 
